@@ -1,6 +1,30 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router";
+import { useEffect } from "react";
 
 export default function App() {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // 🔑 Ensure `host` param is preserved in production
+  useEffect(() => {
+    const host = searchParams.get("host");
+    if (!host) return;
+
+    if (!location.search.includes("host=")) {
+      navigate(`${location.pathname}?host=${host}`, { replace: true });
+    }
+  }, [searchParams, location, navigate]);
+
   return (
     <html lang="en">
       <head>
